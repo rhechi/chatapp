@@ -23,11 +23,12 @@ function App() {
     status:0,
   }*/
   //const [user, setUser] = useState(stupidUser);
+  console.log("started")
   const fetchData = async () =>{
     const res = await axios.get('/auth')
+    
     console.log(res)
   }
-  fetchData()
   return (
     <ContextProvider>
     <Router >
@@ -36,7 +37,7 @@ function App() {
           <Login />
         </Route>
         <Route path="/login">
-          <Login/>
+          <Login fetchData={fetchData}/>
         </Route>
 
         <Route path="/register">

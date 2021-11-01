@@ -1,12 +1,13 @@
 import"./login.css"
 import {useRef} from 'react'
 
-const Login = () => {
+const Login = ({fetchData}) => {
     const email = useRef();
     const password = useRef();
     const handleClick = (e) =>{
         e.preventDefault();
-
+        console.log("clicked")
+        fetchData()
     }
     return (
         
@@ -17,7 +18,7 @@ const Login = () => {
                     <span className="logi">Connect with friends and the world around you on Facebook
                     </span>
                 </div>
-                <div className="loginRight" onSubmit={handleClick}>
+                <div className="loginRight" >
                     <form className="loginBox">
                     <input type="email" 
                         className="loginInput" 
@@ -32,7 +33,7 @@ const Login = () => {
                         ref={password}
                         required
                      />
-                        <button type="submit" className="loginButton">Log IN</button>
+                        <button type="submit" className="loginButton" onClick={handleClick}>Log IN</button>
                         <span className="loginForgot">Forgot Password?</span>
                         <button className="loginRegisterButton">Create a New Account</button>
                     </form>
