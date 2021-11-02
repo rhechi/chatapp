@@ -53,13 +53,9 @@ router.post("/login", async (req,res) =>{
             
             const accessToken = jwt.sign({
                 id: user.id,
-                username: user.username,
-                email: user.email
             }, process.env.JWT_SECRET)
             res.status(200).json({
                 id:user.id,
-                username: user.username,
-                email: user.email,
                 accessToken,
             })
         }else res.status(403).json("email or password incorrent")

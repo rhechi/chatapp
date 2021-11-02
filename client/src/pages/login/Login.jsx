@@ -1,25 +1,32 @@
 import"./login.css"
-import {useRef} from 'react'
+import {useRef , useContext } from 'react'
+import { loginCall } from "../../api/apiCalls";
+import {Context} from '../../contextAPI/Context'
+import { Redirect } from "react-router";
 
-const Login = ({fetchData}) => {
+const Login = () => {
+    const {user,isFetching,error,dispatch} =  useContext(Context)
     const email = useRef();
     const password = useRef();
-    const handleClick = (e) =>{
+
+
+    const onSubmit = (e) =>{
         e.preventDefault();
-        console.log("clicked")
-        fetchData()
+        loginCall({email:email.current.value ,password:password.current.value},dispatch)
     }
+
+    console.log(user? true : false)
     return (
         
         <div className="login">
             <div className="loginWrapper">
                 <div className="loginLeft">
                     <h3 className="loginLogo">Facebook</h3>
-                    <span className="logi">Connect with friends and the world around you on Facebook
+                    <span className="loginDesc">Connect with friends and the world around you on Facebook
                     </span>
                 </div>
                 <div className="loginRight" >
-                    <form className="loginBox">
+                    <form className="loginBox" onSubmit={onSubmit}>
                     <input type="email" 
                         className="loginInput" 
                         placeholder="Email" 
@@ -33,9 +40,10 @@ const Login = ({fetchData}) => {
                         ref={password}
                         required
                      />
-                        <button type="submit" className="loginButton" onClick={handleClick}>Log IN</button>
-                        <span className="loginForgot">Forgot Password?</span>
-                        <button className="loginRegisterButton">Create a New Account</button>
+                    <button type="submit" className="loginButton" disabled={isFetching}>{isFetching?"loading": "Log In"}</button>
+                    <span className="loginForgot">Forgot Password?</span>
+                    <button className="loginRegisterButton">{isFetching?"loading":"Create a New Account"}</button>
+                        
                     </form>
                 </div>
             </div>

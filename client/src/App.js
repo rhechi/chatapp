@@ -1,53 +1,29 @@
-
+import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
-import Register from "./pages/register/register";
-import{ BrowserRouter as Router, Switch,Route} from "react-router-dom"
-import {ContextProvider} from "./contextAPI/Context"
-import{ useState } from 'react'
-import axios from "axios";
-
-
-
-
+import Register from "./pages/register/Register";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from "react-router-dom";
+import { useContext } from "react";
+import { Context } from "./contextAPI/Context";
 
 function App() {
-  /*stupidUser={
-    id:"617ee36ff392ddd6dffd8da3",
-    username:"jhonDoe",
-    firstName:"jhon",
-    lastName:"Doe",
-    email:"jhon.doe@gmail.com",
-    profilePicture:"",
-    contacts:[],
-    rooms: [],
-    status:0,
-  }*/
-  //const [user, setUser] = useState(stupidUser);
-  console.log("started")
-  const fetchData = async () =>{
-    const res = await axios.get('/auth')
-    
-    console.log(res)
-  }
+  const { user } = useContext(Context);
   return (
-    <ContextProvider>
-    <Router >
+    <Router>
       <Switch>
-      <Route exact path="/">
-          <Login />
+        <Route exact path="/">
+          {user ? <Home /> : <Register />}
         </Route>
-        <Route path="/login">
-          <Login fetchData={fetchData}/>
-        </Route>
-
+        <Route path="/login">{user ? <Redirect to="/" /> : <Login />}</Route>
         <Route path="/register">
-          <Register/>
+          {user ? <Redirect to="/" /> : <Register />}
         </Route>
-
       </Switch>
-      <Register />
     </Router>
-    </ContextProvider>
   );
 }
 

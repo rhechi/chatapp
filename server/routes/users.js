@@ -38,12 +38,12 @@ router.put("/update",verify, async (req,res) =>{
     
 })
 //get a user
-router.get("/:username",async(req,res)=>{
+router.get("/:id",async(req,res)=>{
 
-    const username = req.params.username
+    const id = req.params.id
     try {
         
-        const user = await User.findOne({username})
+        const user = await User.findOne({id})
         res.status(200).json(user)
     } catch (err) {
         res.status(500).json(err)
