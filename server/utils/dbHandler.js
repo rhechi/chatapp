@@ -124,6 +124,19 @@ const getMessages = async (conversationID) => {
                         return null
                     }
                     }
+
+
+
+                    const getToken = async (token) => {
+                        try {
+                            const res = await Token.findOne({token})
+                            if(res){return true}else{return null}
+                            } catch (err) {
+                            console.log(err)
+                            return null
+                        }
+                        }
+               
 /*
 const name = async () => {
     try {
@@ -138,7 +151,7 @@ const name = async () => {
 
 
 
-
+exports.getTokenDB = getToken
 exports.deleteTokenDB = deleteToken
 exports.addTokenDB = addToken
 exports.setConvDB = setConv

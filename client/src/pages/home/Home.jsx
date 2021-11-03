@@ -7,7 +7,7 @@ import {Context} from "../../contextAPI/Context"
 import axios from 'axios'
 import { useContext , useState , useEffect, useRef} from 'react'
 import { io } from "socket.io-client"
-import { on } from 'stream'
+
 
 function Home() {
     const [convs,setConvs] = useState([])
@@ -46,7 +46,7 @@ function Home() {
     useEffect(()=>{
         const getConvs = async () =>{
             try {
-                
+                //apiCall-----------------------------------------
                 const res = await axios.get("/convs/"+user.id)
                 setConvs(res.data)
             } catch (err) {
@@ -58,7 +58,8 @@ function Home() {
     useEffect(()=>{
         const getMessages = async () =>{
             try {
-                const res = await axios.get("/messages/"+chat._id)
+                //apicall------------------------------------
+                const res = await axios.get("/messages/"+chat?._id)
                 
                 setMessages(res.data)
             } catch (err) {
@@ -73,7 +74,7 @@ function Home() {
 
     const onSubmit= async (e) =>{
         e.preventDefault()
-        console.log("chat:",chat._id)
+        console.log("chat:",chat?._id)
         const message = {
             
             conversationID: chat._id,
@@ -88,6 +89,7 @@ function Home() {
             text: newMessage
         })
         try {
+            //apicall---------------------------------------------------
             const res = await axios.post("/messages",message);
             setMessages([...messages, res.data])
             setNewMessage("")
