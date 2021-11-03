@@ -2,15 +2,18 @@ const router = require('express').Router()
 const User = require('../models/User')
 const Conv = require('../models/Conv')
 const verify = require('../middleware/verifyToken')
+const { getConvsDB , setConvDB } = require('../utils/dbHandler')
 
 //new conv---------add validation and verify
 router.post("/",async(req,res) =>{
-    const newConv = new Conv({
+    const newConv = {
         members:[req.body.senderID,req.body.recieverID]
-    })
+    }
     try {
-        const savedConv = await newConv.save()
-        res.status(200).json(savedConv)
+        //dbcall------------
+        const savedConv = await setConvDB(newConv)
+
+        savedConv ? res.status(200).json(savedConv) :  res.status(500).json("error")
     } catch (err) {
         res.status(500).json(err)
     }
@@ -20,9 +23,8 @@ router.post("/",async(req,res) =>{
 router.get("/:id" , async (req,res) =>{
     const currentID = req.params.id
     try {
-        const conv = await Conv.find({
-            members : { $in: [currentID]}
-        })
+        //dbCall-------------
+        const conv = await getConvsDB(currentID)
         res.status(200).json(conv)
     } catch (err) {
         res.status(500).json(err)

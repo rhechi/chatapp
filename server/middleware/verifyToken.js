@@ -2,7 +2,7 @@
 const jwt = require("jsonwebtoken")
 
 const verify = (req,res,next) =>{
-    const authHeader = req.headers.authorization;
+    const authHeader = req.headers.auth;
     if(authHeader){
         const token = authHeader.split(" ")[1];
         jwt.verify(token,process.env.JWT_SECRET, (err,payload) =>{
@@ -10,8 +10,7 @@ const verify = (req,res,next) =>{
                 
                 return res.status(403).json("invalid token")
             }
-        req.user = payload
-       // console.log(payload)
+        req.jwt = payload
         next()
         })
     }else{

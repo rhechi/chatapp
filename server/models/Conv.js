@@ -3,7 +3,8 @@ const mongoose = require('mongoose')
 const ConvSchema = new mongoose.Schema(
     {
         members:{
-            type:Array
+            type:Array,
+            required: true
         },
     },
     {timestamps: true}

@@ -1,16 +1,14 @@
 const router = require('express').Router()
 const User = require('../models/User')
 const verify = require('../middleware/verifyToken')
+const { updateUserDB , getByIdDB } = require('../utils/dbHandler')
 
 
 //user operations
-//todo: add jwt auth----------------------------------------------!important
-//warinig--shitty code again--needs update
-//also add token termination for some actions
 //updateuser-----todo:add verification and satnitazation---maybe split updates---
 router.put("/update",verify, async (req,res) =>{          
             if(!req.body.id){
-            const currentID = req.user.id
+            const currentID = req.jwt.id
             const update = req.body
             
             if(req.body.password){
@@ -22,10 +20,9 @@ router.put("/update",verify, async (req,res) =>{
                 }
             }
             try {
-                
-                const user = await User.findOneAndUpdate({id:currentID},{$set:update})
-            
-                
+                //db call-------------------
+                const user = await updateUserDB(currentID,update)
+
                 res.status(200).json("Account updated")
                 
             } catch (err) {
@@ -42,8 +39,8 @@ router.get("/:id",async(req,res)=>{
 
     const id = req.params.id
     try {
-        
-        const user = await User.findOne({id})
+        //db call---------------
+        const user = await getByIdDB(id)
         res.status(200).json(user)
     } catch (err) {
         res.status(500).json(err)
