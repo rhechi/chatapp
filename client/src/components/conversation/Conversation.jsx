@@ -9,17 +9,19 @@ function Conversation({conv , currentUser}) {
         const friendID = conv.members.find(m => m !== currentUser.id);
         const getUser = async () =>{
             try {          
-                const res = await axios("/users/"+friendID)
+                const res = await axios.get("/users/"+friendID)
+               // console.log(res.data)
                 setUser(res.data)
             } catch (err) {
                 console.log(err)
             }
         }
+        getUser()
     },[currentUser,conv])
     return (
         <div className="conversation">
-            <img className="conversationImg" src={user.profilePicture} alt="" />
-            <span className="conversationName">{user.firstName}</span>
+            <img className="conversationImg" src={user?.profilePicture} alt="" />
+            <span className="conversationName">{user?.username}</span>
         </div>
     )
 }

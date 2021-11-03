@@ -73,3 +73,7 @@
     font-weight: 500px;
     cursor: pointer;
 }
+.link{
+    display: flex;
+    justify-content: center;
+}

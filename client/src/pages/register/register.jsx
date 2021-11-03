@@ -2,6 +2,7 @@ import"./register.css"
 import { useRef } from 'react'
 import {registerCall} from '../../api/apiCalls'
 import { useHistory } from "react-router"
+import {Link} from 'react-router-dom'
 
 function Register() {
     const history = useHistory()
@@ -14,7 +15,7 @@ function Register() {
     const onSubmit= async (e)=>{
         e.preventDefault()
         //returning error?
-        if(passwordAgain.current.value !== password.current.value) { password.current.customValidity("passwords don't match")} 
+        if(passwordAgain.current.value !== password.current.value) { password.current.setCustomValidity("passwords don't match")} 
         else{
             const user = {
                 username: username.current.value,
@@ -49,7 +50,9 @@ function Register() {
                         <input type="password" className="loginInput" placeholder="Password Again" ref={passwordAgain} required/>
                         <button type="submit" className="loginButton">Sign Up</button>
                         <span className="loginForgot">Forgot Password?</span>
+                        <Link className="link" to="/login">
                         <button className="loginRegisterButton">Log into Account</button>
+                        </Link>
                     </form>
                 </div>
             </div>

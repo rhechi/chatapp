@@ -1,17 +1,48 @@
+//WARNING: THIS IS SOME SHITTY CODE HERE, AM STILL TESTING
+
 import './home.css'
 import Conversation from '../../components/conversation/Conversation'
 import Message from '../../components/message/Message'
 import {Context} from "../../contextAPI/Context"
 import axios from 'axios'
 import { useContext , useState , useEffect, useRef} from 'react'
+import { io } from "socket.io-client"
+import { on } from 'stream'
 
 function Home() {
     const [convs,setConvs] = useState([])
     const [chat,setChat] = useState(null)
     const [messages,setMessages] = useState([])
     const [newMessage,setNewMessage] = useState("")
+    const [arrivalMessage,setArrivalMessage] = useState(null)
+    const socket = useRef()
     const {user} = useContext(Context)
     const scrollRef = useRef();
+
+    useEffect(() =>{
+        socket.current = io("ws://localhost:8000")
+        socket.current?.on("getMessage", message =>{
+           setArrivalMessage({
+              sender: message.senderId,
+              text: message.text,
+              createddAt: Date.now
+           })
+        })
+    },[])
+    useEffect(()=>{
+        arrivalMessage && chat?.members.includes(arrivalMessage.sender) && 
+        setMessages(prev=>[...prev,arrivalMessage])
+    },[arrivalMessage,chat])
+    
+    useEffect(()=>{
+        socket.current.emit("init" , user.id)
+        socket.current.on("getUsers", users=>{
+            console.log(users)
+        })
+    },[user])
+  
+
+   
     useEffect(()=>{
         const getConvs = async () =>{
             try {
@@ -27,7 +58,8 @@ function Home() {
     useEffect(()=>{
         const getMessages = async () =>{
             try {
-                const res = await axios.get("/messages/"+chat.id)
+                const res = await axios.get("/messages/"+chat._id)
+                
                 setMessages(res.data)
             } catch (err) {
                 console.log(err)
@@ -35,14 +67,26 @@ function Home() {
         }
         getMessages()
     },[chat])
+    useEffect(()=>{
+        scrollRef.current?.scrollIntoView({behaviour: "smooth"})
+    },[messages])
 
     const onSubmit= async (e) =>{
         e.preventDefault()
+        console.log("chat:",chat._id)
         const message = {
+            
+            conversationID: chat._id,
             sender: user.id,
-            text:newMessage,
-            conversationID:chat.id
+            text:newMessage
+            
         }
+        const recieverId = chat.members.find(member => member !== user.id)
+        socket.current.emit("sendMessage",{
+            senderId: user.id,
+            recieverId,
+            text: newMessage
+        })
         try {
             const res = await axios.post("/messages",message);
             setMessages([...messages, res.data])
@@ -71,11 +115,13 @@ function Home() {
                     
                     <div className="chatBoxTop">
                         {messages.map(m=>(
-                            <Message message={m} own={m.sender === user.id}/>
+                            <div ref={scrollRef}>
+                                <Message message={m} own={m.sender === user.id}/>
+                            </div>
                         ))}
                     </div></> :  <div> No conversation selected</div>}
                     <form className="chatBoxBottom" onSubmit={onSubmit}>
-                        <textarea onChange={(e)=>setNewMessage(e.target.value)} value={newMessage} type="text" className="chatMessageInput" placeholder="write text here"/>
+                        <input onChange={(e)=>setNewMessage(e.target.value)} value={newMessage} type="text" className="chatMessageInput" placeholder="write text here"/>
                         <button className="chatSubmitButton" type="submit">Send</button>
                     </form>
                 </div>

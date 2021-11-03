@@ -1,15 +1,15 @@
 const mongoose = require('mongoose')
 
-const ConversationSchema = new mongoose.Schema(
+const MessageSchema = new mongoose.Schema(
     {
         conversationID:{
-            type:string
+            type:String
         },
         sender:{
-            type:string
+            type:String
         },
         text:{
-            type:string
+            type:String
         },
     },
     {timestamps: true}
